@@ -1,4 +1,5 @@
 "use strict";
+const Draggable = require('vuedraggable');
 
 const Suite = require('../suite');
 const Material = require('../materialize');
@@ -12,6 +13,7 @@ module.exports = {
     components: {
         "navbar-menu": NavbarMenu,
         "tap-target": TapTarget,
+      "draggable": Draggable
     },
     data() {
         return {
@@ -36,16 +38,18 @@ module.exports = {
 
                 <div class="row tabs-row">
                     <ul id="navbar-tabs" class="tabs tabs-transparent">
-                        <template v-for="(suite,index) in suites">
-                        <li class="tab col s3 unselectable-text">
-                            <a draggable="false" class="tab-button" v-on:click="onTabSelected(index)" v-bind:href="'#tab'+index" v-bind:class="{ active: index===0 }">
-                                <template v-if="editMode && index===AppStatus.activeSuite">
-                                    <input id="suite-title-input" type="text" class="validate tab-text" v-model="suite.title">
-                                </template>
-                                <span class="tab-text" v-show="!editMode || index!==AppStatus.activeSuite">{{suite.title}}</span>
-                            </a>
-                        </li>
-                        </template>
+                        <draggable element="li" class="tab col s3 unselectable-text>
+			<template v-for="(suite,index) in suites">
+			    <li class="tab col s3 unselectable-text">
+			        <a draggable="false" class="tab-button" v-on:click="onTabSelected(index)" v-bind:href="'#tab'+index" v-bind:class="{ active: index===0 }">
+				    <template v-if="editMode && index===AppStatus.activeSuite">
+				        <input id="suite-title-input" type="text" class="validate tab-text" v-model="suite.title">
+				    </template>
+				    <span class="tab-text" v-show="!editMode || index!==AppStatus.activeSuite">{{suite.title}}</span>
+			        </a>
+			    </li>
+			</template>
+			<draggable>
                     </ul>
                 </div>
             </div>
