@@ -38,7 +38,7 @@ module.exports = {
 
                 <div class="row tabs-row">
                     <ul id="navbar-tabs" class="tabs tabs-transparent">
-                        <draggable element="li" class="tab col s3 unselectable-text>
+                        <draggable @end="onEnd"> 
 			<template v-for="(suite,index) in suites">
 			    <li class="tab col s3 unselectable-text">
 			        <a draggable="false" class="tab-button" v-on:click="onTabSelected(index)" v-bind:href="'#tab'+index" v-bind:class="{ active: index===0 }">
@@ -102,7 +102,16 @@ module.exports = {
                 default:
                     this.AppStatus.events.emit(selection);
             }
-        }
+        },
+      onEnd: function(evt) {
+	// console.log('Selected suite was: ' + AppStatus.activeSuite.toString());
+	// console.log('dragged element was: ' + evt.oldIndex.toString());
+	if (evt.oldIndex === AppStatus.activeSuite) {
+          this.onTabSelected(evt.newIndex);
+          this.selectTab(evt.newIndex)
+	}
+	// console.log('Now selected suite is: ' + AppStatus.activeSuite.toString());
+      }
     },
     computed: {
         currentSuite() {
