@@ -1,9 +1,9 @@
 /* globals $, Materialize */
 "use strict";
 
-const AppConfig = require('../common/app_config');
+const AppConfig = require('../../common/app_config');
 
-//Methods interface with jQuery
+// Methods interface with jQuery
 module.exports = {
     init() {
         this.updateCollapsible();
@@ -34,7 +34,7 @@ module.exports = {
         $('ul.tabs').tabs();
     },
     updateDropdown() {
-        $('.navbar-menu-button').dropdown({
+        $('#navbar-menu-button').dropdown({
             inDuration: 150,
             outDuration: 100,
             hover: false,
@@ -50,5 +50,11 @@ module.exports = {
     },
     updateModals() {
         $('.modal').modal();
+    },
+    closeModals() {
+        $('#config-modal').modal('close');
+    },
+    toggleNavBarMenu() {
+        $('#navbar-menu-button').click();
     }
 };

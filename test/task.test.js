@@ -5,7 +5,7 @@ const assert = require('chai').assert;
 
 const config = require('./config');
 
-const Task = require('../app/renderer/task');
+const Task = require('../app/common/task');
 const TaskStatus = require('../app/common/task_status');
 
 describe("Tasks", () => {
@@ -18,7 +18,6 @@ describe("Tasks", () => {
     afterEach(() => {
         testTask.stop();
     });
-
 
     it("Valid Tasks Status", () => {
         assert.isOk(TaskStatus.idle);
@@ -34,7 +33,7 @@ describe("Tasks", () => {
         assert.strictEqual(testTask.status, TaskStatus.idle);
 
         function stdout(text) {
-            assert.strictEqual(text, "hello\n");
+            assert.strictEqual(text, "hello");
             stdoutCalled = true;
         }
 
@@ -79,13 +78,13 @@ describe("Tasks", () => {
 
     it("Update Execution Time", () => {
         assert.throws(() => {
-            testTask.updateElapsedTime();
+            testTask._updateElapsedTime();
         });
         assert.isNull(testTask.elapsedTime);
 
         testTask.run(() => {}, () => {});
         assert.doesNotThrow(() => {
-            testTask.updateElapsedTime();
+            testTask._updateElapsedTime();
         });
         assert.isNumber(testTask.elapsedTime);
     });
@@ -99,5 +98,18 @@ describe("Tasks", () => {
             done();
         });
         testTask.stop();
+    });
+
+    it("Trying to run a running task", (done) => {
+        assert.isFalse(testTask.isRunning());
+        assert.strictEqual(testTask.status, TaskStatus.idle);
+
+        testTask.run(() => {}, () => {
+            assert.isFalse(testTask.isRunning());
+            assert.strictEqual(testTask.status, TaskStatus.ok);
+            done();
+        });
+        assert.isTrue(testTask.isRunning());
+        assert.throws(() => testTask.run(() => {}, () => {}))
     });
 });

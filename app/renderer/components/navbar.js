@@ -1,19 +1,20 @@
 "use strict";
 const Draggable = require('vuedraggable');
 
-const Suite = require('../suite');
-const Material = require('../materialize');
+const Suite = require('../../common/suite');
+const Material = require('../api/materialize');
 const AppStatus = require('../app_status');
+const GauchoActions = require('../api/gaucho_actions');
 const NavbarMenu = require('./navbar_menu');
 const TapTarget = require('./tap_target');
-const DeleteConfirmationAlert = require('../app_alerts').DeleteConfirmationAlert;
+const DeleteConfirmationAlert = require('../api/app_alerts').DeleteConfirmationAlert;
 
 module.exports = {
     props: ['suites'],
     components: {
         "navbar-menu": NavbarMenu,
         "tap-target": TapTarget,
-      "draggable": Draggable
+        "draggable": Draggable
     },
     data() {
         return {
@@ -32,7 +33,7 @@ module.exports = {
                 <tap-target v-bind:activates="'tap-edit'" v-bind:title="'Add some tasks !'" v-bind:description="'By pressing this button you can add new tasks to your list below.'"></tap-target>
                 <ul class="right navbar-buttons">
                     <li><a id="tap-edit" v-on:click="toggleEdit" v-bind:class="{'edit-button-active': editMode}" class="edit-button"><i class="material-icons unselectable-text">mode_edit</i></a></li>
-                    <li><a class="navbar-menu-button" data-activates='navbar-menu' data-gutter="30"><i class="material-icons small unselectable-text">menu</i></a></li>
+                    <li><a id="navbar-menu-button" data-activates='navbar-menu' data-gutter="30"><i class="material-icons small unselectable-text">menu</i></a></li>
                 </ul>
                 <navbar-menu v-on:selection="onMenuSelection" v-bind:suites="suites"></navbar-menu>
 
@@ -61,6 +62,9 @@ module.exports = {
         Material.checkFirstTimeTap(".tap-target");
     },
     methods: {
+        dragOver(index) {
+            this.selectTab(index);
+        },
         addSuite() {
             if (this.suites.length < AppStatus.maxSuites) {
                 this.suites.push(new Suite(`Suite ${(this.suites.length + 1)}`));
@@ -89,7 +93,7 @@ module.exports = {
             });
         },
         toggleEdit() {
-            AppStatus.toggleEdit();
+            GauchoActions.toggleEdit();
         },
         onMenuSelection(selection) {
             switch (selection) {
@@ -100,15 +104,15 @@ module.exports = {
                     this.deleteSuite();
                     break;
                 default:
-                    this.AppStatus.events.emit(selection);
+                    AppStatus.events.emit(selection);
             }
         },
-      onEnd: function(evt) {
-	if (evt.oldIndex === AppStatus.activeSuite) {
-          this.onTabSelected(evt.newIndex);
-          this.selectTab(evt.newIndex)
-	}
-      }
+        onEnd: function(evt) {
+            if (evt.oldIndex === AppStatus.activeSuite) {
+                this.onTabSelected(evt.newIndex);
+                this.selectTab(evt.newIndex)
+            }
+        }
     },
     computed: {
         currentSuite() {
