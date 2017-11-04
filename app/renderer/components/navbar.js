@@ -104,13 +104,10 @@ module.exports = {
             }
         },
       onEnd: function(evt) {
-	// console.log('Selected suite was: ' + AppStatus.activeSuite.toString());
-	// console.log('dragged element was: ' + evt.oldIndex.toString());
 	if (evt.oldIndex === AppStatus.activeSuite) {
           this.onTabSelected(evt.newIndex);
           this.selectTab(evt.newIndex)
 	}
-	// console.log('Now selected suite is: ' + AppStatus.activeSuite.toString());
       }
     },
     computed: {
